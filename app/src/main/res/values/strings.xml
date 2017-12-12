@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">OffersV1</string>
+    <string name="action_sort_ascending">Orden ascendente</string>
+    <string name="action_sort_descending">Orden descendente</string>
+    <string name="offer_added">Añadida nueva oferta</string>
+    <string name="offer_added_failure">Fallo al añadir oferta</string>
+</resources>

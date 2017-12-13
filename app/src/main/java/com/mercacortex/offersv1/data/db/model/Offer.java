@@ -5,7 +5,8 @@ import android.os.Parcelable;
 
 import java.util.Comparator;
 
-public class Offer implements Parcelable{
+public class Offer implements Parcelable {
+    public static final String TAG = "Offer";
     private String name;
     private String shop;
     private String date;
@@ -40,6 +41,26 @@ public class Offer implements Parcelable{
         this.image = image;
         this.importance = importance;
     }
+
+    protected Offer(Parcel in) {
+        name = in.readString();
+        shop = in.readString();
+        date = in.readString();
+        image = in.readInt();
+        importance = in.readInt();
+    }
+
+    public static final Creator<Offer> CREATOR = new Creator<Offer>() {
+        @Override
+        public Offer createFromParcel(Parcel in) {
+            return new Offer(in);
+        }
+
+        @Override
+        public Offer[] newArray(int size) {
+            return new Offer[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -79,5 +100,10 @@ public class Offer implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeString(shop);
+        parcel.writeString(date);
+        parcel.writeInt(image);
+        parcel.writeInt(importance);
     }
 }

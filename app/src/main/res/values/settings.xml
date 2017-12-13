@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pref_category_general">Ajustes</string>
+    <string-array name="pref_entries_numcolumn">
+        <item>España</item>
+        <item>Francia</item>
+        <item>Italia</item>
+        <item>Gran Bretaña</item>
+    </string-array>
+    <string-array name="pref_entryvalues_numcolumn">
+        <item>es</item>
+        <item>fr</item>
+        <item>it</item>
+        <item>gb</item>
+    </string-array>
+</resources>

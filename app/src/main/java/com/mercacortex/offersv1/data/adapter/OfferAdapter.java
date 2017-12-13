@@ -1,62 +1,57 @@
 package com.mercacortex.offersv1.data.adapter;
 
 
-import android.support.v7.widget.RecyclerView;
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mercacortex.offersv1.R;
 import com.mercacortex.offersv1.data.db.model.Offer;
-import com.mercacortex.offersv1.data.db.repository.OfferRepository;
 
-import java.util.List;
+import java.util.ArrayList;
 
-public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> {
+public class OfferAdapter extends ArrayAdapter<Offer> {
 
     public static final String ASC = "ASC";
     public static final String DESC = "DESC";
     public static final String TYPE = "TYPE";
-    private List<Offer> offers;
 
-    public OfferAdapter() {
-        offers = OfferRepository.getInstance();
+    public OfferAdapter(@NonNull Context context) {
+        super(context, R.layout.item_offer, new ArrayList<Offer>());
     }
 
-    /**
-     * Infla la vista. Crea un holder con los elementos de item.
-     * @param parent
-     * @param viewType
-     * @return Devuelve el objeto holder.
-     */
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_offer, parent);
-        ViewHolder holder = new ViewHolder(rootView);
-        holder.imvType = rootView.findViewById(R.id.imvType);
-        holder.txvDate = rootView.findViewById(R.id.txvDate);
-        holder.txvShop = rootView.findViewById(R.id.txvShop);
-        holder.txvName = rootView.findViewById(R.id.txvName);
-        return holder;
-    }
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        View rootView = convertView;
+        OfferHolder holder;
+        if(rootView == null) {
+            LayoutInflater inflater = LayoutInflater.from(getContext());
+            rootView = inflater.inflate(R.layout.item_offer, parent);
+            holder = new OfferHolder();
 
-    /**
-     * Guarda los valores en los elementos del holder
-     * @param holder
-     * @param position
-     */
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.imvType.setId(offers.get(position).getImage());
-        holder.txvDate.setText(offers.get(position).getDate());
-        holder.txvShop.setText(offers.get(position).getShop());
-        holder.txvName.setText(offers.get(position).getName());
-    }
-    @Override
-    public int getItemCount() {
-        return offers.size();
+            holder.imvType = rootView.findViewById(R.id.imvType);
+            holder.txvDate = rootView.findViewById(R.id.txvDate);
+            holder.txvShop = rootView.findViewById(R.id.txvShop);
+            holder.txvName = rootView.findViewById(R.id.txvName);
+
+            //SET TAG
+            rootView.setTag(holder);
+        } else
+            holder = (OfferHolder) rootView.getTag();
+
+        holder.imvType.setId(getItem(position).getImage());
+        holder.txvDate.setText(getItem(position).getDate());
+        holder.txvShop.setText(getItem(position).getShop());
+        holder.txvName.setText(getItem(position).getName());
+
+        return rootView;
     }
 
     //TODO: Falta ordenar y array dinámico
@@ -75,16 +70,8 @@ public class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> 
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    private class OfferHolder {
         ImageView imvType;
         TextView txvShop, txvName, txvDate;
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-            imvType = itemView.findViewById(R.id.imvType);
-            txvDate = itemView.findViewById(R.id.txvDate);
-            txvShop = itemView.findViewById(R.id.txvShop);
-            txvName = itemView.findViewById(R.id.txvName);
-        }
     }
 }

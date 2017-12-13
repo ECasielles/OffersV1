@@ -13,6 +13,7 @@ import java.util.List;
 
 public class OfferListPresenter implements OfferListContract.Presenter,
         OfferListInteractor.OnLoadFinishedListener {
+    public static final String TAG = "OfferListPresenter";
 
     OfferListContract.View view;
     OfferListInteractor interactor;
@@ -33,7 +34,7 @@ public class OfferListPresenter implements OfferListContract.Presenter,
     }
 
     @Override
-    public void loadOffers() {
+    public void loadOfferList() {
 
     }
 

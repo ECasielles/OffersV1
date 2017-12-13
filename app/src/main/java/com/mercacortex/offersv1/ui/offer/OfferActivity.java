@@ -1,77 +1,87 @@
 package com.mercacortex.offersv1.ui.offer;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.widget.Toast;
 
 import com.mercacortex.offersv1.R;
-import com.mercacortex.offersv1.data.adapter.OfferAdapter;
+import com.mercacortex.offersv1.data.prefs.AppPreferencesHelper;
+import com.mercacortex.offersv1.ui.OfferApplication;
+import com.mercacortex.offersv1.ui.offer.fragment.OfferAddEditFragment;
+import com.mercacortex.offersv1.ui.offer.fragment.OfferListFragment;
+import com.mercacortex.offersv1.ui.offer.presenter.OfferAddEditPresenter;
+import com.mercacortex.offersv1.ui.offer.presenter.OfferListPresenter;
 
 /**
  * Activity principal de ofertas.
- * TODO: OfferListFragment y OfferAddEditFragment. Vista y código.
- * TODO: OfferListPresenter y OfferAddEditPresenter. Terminar código.
- * TODO: OfferListInteractor y OfferAddEditInteractor. Terminar código.
- * TODO: OfferActivity. Añadir Fragments.
- * TODO: OfferAdapter. Guardar estado dinámico.
- * TODO: Utils. Crear paquete y clase CommonUtils y CommonDialog.
- * TODO: ...
+ * TODO: OfferAddEditFragment. Código.
+ * TODO: OfferListPresenter y OfferAddEditPresenter. Código.
+ * TODO: OfferListInteractor y OfferAddEditInteractor. Código.
+ * TODO: OfferAdapter. Estado dinámico. Sort.
+ * TODO: Utils.
+ * TODO: Preferences.
  */
 
-public class OfferActivity extends AppCompatActivity {
+public class OfferActivity extends AppCompatActivity implements OfferListFragment.OfferListListener,
+        OfferAddEditFragment.OfferAddEditListener {
 
-    private FloatingActionButton fabAdd;
-    RecyclerView recyclerView;
-    OfferAdapter adapter;
+    OfferListFragment offerListFragment;
+    OfferListPresenter offerListPresenter;
+    OfferAddEditFragment offerAddEditFragment;
+    OfferAddEditPresenter offerAddEditPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fabAdd = findViewById(R.id.fab);
-        recyclerView = findViewById(android.R.id.list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new OfferAdapter();
-        recyclerView.setAdapter(adapter);
-    }
-
-    //onClick
-    public void onClick(View view) {
-        //...
-    }
-
-    //onActivityResult
-    /*
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-    */
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_sort_ascending:
-                adapter.sort(OfferAdapter.ASC);
-                break;
-            case R.id.action_sort_descending:
-                adapter.sort(OfferAdapter.DESC);
-                break;
+        offerListFragment = (OfferListFragment) getSupportFragmentManager().findFragmentByTag(OfferListFragment.TAG);
+        if(offerListFragment == null) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            offerListFragment = OfferListFragment.newInstance(null);
+            transaction.add(android.R.id.content, offerListFragment, OfferListFragment.TAG).commit();
         }
-        return super.onOptionsItemSelected(item);
+
+        offerListPresenter = new OfferListPresenter(offerListFragment);
+        offerListFragment.setPresenter(offerListPresenter);
     }
+
+    @Override
+    public void addNewOffer(Bundle bundle) {
+        offerAddEditFragment = (OfferAddEditFragment) getSupportFragmentManager().findFragmentByTag(OfferAddEditFragment.TAG);
+        if(offerAddEditFragment == null) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            if(bundle == null)
+                offerAddEditFragment = OfferAddEditFragment.newInstance(null);
+            else
+                offerAddEditFragment = OfferAddEditFragment.newInstance(bundle);
+            transaction.addToBackStack(null);
+            transaction.add(android.R.id.content, offerAddEditFragment, OfferListFragment.TAG).commit();
+        }
+
+        offerAddEditPresenter = new OfferAddEditPresenter(offerAddEditFragment);
+        offerAddEditFragment.setPresenter(offerAddEditPresenter);
+    }
+
+    @Override
+    public void listOffers() {
+        getSupportFragmentManager().popBackStack();
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        showAppPreferences();
+    }
+
+    private void showAppPreferences() {
+        AppPreferencesHelper appPreferencesHelper = ((OfferApplication) getApplicationContext()).getAppPreferencesHelper();
+        appPreferencesHelper.setCurrentUserName("Lolita");
+        String message = "Tu usuario de sesión es: " + appPreferencesHelper.getCurrentUserName();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
 
 }

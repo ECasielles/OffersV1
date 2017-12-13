@@ -8,4 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+    <!-- El color del checkbox cuando se activa pasa a ser colorAccent -->
+    <style name="Custom.Checkbox" parent="Theme.AppCompat">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="colorControlActivated">@android:color/darker_gray</item>
+    </style>
+
+
 </resources>

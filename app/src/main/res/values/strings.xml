@@ -4,4 +4,8 @@
     <string name="action_sort_descending">Orden descendente</string>
     <string name="offer_added">Añadida nueva oferta</string>
     <string name="offer_added_failure">Fallo al añadir oferta</string>
+    <string name="edtName">Name</string>
+    <string name="edtShortName">Short name</string>
+    <string name="edtDescription">Description</string>
+    <string name="offer_delete">Borrar oferta</string>
 </resources>

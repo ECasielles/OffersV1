@@ -20,7 +20,7 @@ public interface OfferListContract {
     }
 
     interface Presenter extends BasePresenter, Serializable {
-        void loadOffers();
+        void loadOfferList();
         void deleteItem(Offer parcelable);
     }
 

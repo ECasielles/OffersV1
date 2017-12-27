@@ -1,13 +1,14 @@
 package com.mercacortex.offersv1.ui.offer;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.mercacortex.offersv1.R;
 import com.mercacortex.offersv1.data.prefs.AppPreferencesHelper;
 import com.mercacortex.offersv1.ui.OfferApplication;
+import com.mercacortex.offersv1.ui.base.BaseActivity;
 import com.mercacortex.offersv1.ui.offer.fragment.OfferAddEditFragment;
 import com.mercacortex.offersv1.ui.offer.fragment.OfferListFragment;
 import com.mercacortex.offersv1.ui.offer.presenter.OfferAddEditPresenter;
@@ -18,12 +19,12 @@ import com.mercacortex.offersv1.ui.offer.presenter.OfferListPresenter;
  * TODO: OfferAddEditFragment. Código.
  * TODO: OfferListPresenter y OfferAddEditPresenter. Código.
  * TODO: OfferListInteractor y OfferAddEditInteractor. Código.
- * TODO: OfferAdapter. Estado dinámico. Sort.
+ * TODO: Estado dinámico. Sort.
  * TODO: Utils.
  * TODO: Preferences.
  */
 
-public class OfferActivity extends AppCompatActivity implements OfferListFragment.OfferListListener,
+public class OfferActivity extends BaseActivity implements OfferListFragment.OfferListListener,
         OfferAddEditFragment.OfferAddEditListener {
 
     OfferListFragment offerListFragment;
@@ -39,7 +40,7 @@ public class OfferActivity extends AppCompatActivity implements OfferListFragmen
         offerListFragment = (OfferListFragment) getSupportFragmentManager().findFragmentByTag(OfferListFragment.TAG);
         if(offerListFragment == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            offerListFragment = OfferListFragment.newInstance(null);
+            offerListFragment = OfferListFragment.newInstance();
             transaction.add(android.R.id.content, offerListFragment, OfferListFragment.TAG).commit();
         }
 
@@ -48,14 +49,11 @@ public class OfferActivity extends AppCompatActivity implements OfferListFragmen
     }
 
     @Override
-    public void addNewOffer(Bundle bundle) {
+    public void addNewOffer(@Nullable Bundle bundle) {
         offerAddEditFragment = (OfferAddEditFragment) getSupportFragmentManager().findFragmentByTag(OfferAddEditFragment.TAG);
         if(offerAddEditFragment == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            if(bundle == null)
-                offerAddEditFragment = OfferAddEditFragment.newInstance(null);
-            else
-                offerAddEditFragment = OfferAddEditFragment.newInstance(bundle);
+            offerAddEditFragment = OfferAddEditFragment.newInstance(bundle);
             transaction.addToBackStack(null);
             transaction.add(android.R.id.content, offerAddEditFragment, OfferListFragment.TAG).commit();
         }
@@ -68,7 +66,6 @@ public class OfferActivity extends AppCompatActivity implements OfferListFragmen
     public void listOffers() {
         getSupportFragmentManager().popBackStack();
     }
-
 
     @Override
     protected void onStart() {

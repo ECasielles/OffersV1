@@ -8,4 +8,6 @@
     <string name="edtShortName">Short name</string>
     <string name="edtDescription">Description</string>
     <string name="offer_delete">Borrar oferta</string>
+    <string name="offer_deleted_message">Oferta eliminada</string>
+    <string name="offer_confirm_deletion">Eliminar oferta</string>
 </resources>

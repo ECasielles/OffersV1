@@ -19,10 +19,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import com.mercacortex.offersv1.R;
-import com.mercacortex.offersv1.data.adapter.OfferAdapter;
 import com.mercacortex.offersv1.data.db.model.Offer;
-import com.mercacortex.offersv1.ui.base.BasePresenter;
-import com.mercacortex.offersv1.ui.base.BaseView;
+import com.mercacortex.offersv1.ui.base.BaseActivity;
+import com.mercacortex.offersv1.ui.offer.adapter.OfferAdapter;
 import com.mercacortex.offersv1.ui.offer.contract.OfferListContract;
 import com.mercacortex.offersv1.ui.offer.presenter.OfferListPresenter;
 import com.mercacortex.offersv1.utils.CommonDialog;
@@ -30,27 +29,18 @@ import com.mercacortex.offersv1.utils.CommonDialog;
 import java.util.List;
 
 
-public class OfferListFragment extends ListFragment implements BaseView, OfferListContract.View {
-
+public class OfferListFragment extends ListFragment implements OfferListContract.View {
     //PARAMETROS
     public static final String TAG = "OfferListFragment";
-    OfferListContract.Presenter presenter;
-    Toolbar toolbar;
-    FloatingActionButton floatingActionButton;
-    OfferListListener callback;
-    OfferAdapter adapter;
+    private OfferListListener callback;
+    private OfferListContract.Presenter presenter;
+    private OfferAdapter adapter;
+    private Toolbar toolbar;
+    private FloatingActionButton floatingActionButton;
 
-    //CONTRATO
-    public interface OfferListListener {
-        void addNewOffer(Bundle bundle);
-    }
-
-    //CONSTRUCTOR
-    public static OfferListFragment newInstance(Bundle arguments) {
-        OfferListFragment offerListFragment = new OfferListFragment();
-        if(arguments != null)
-            offerListFragment.setArguments(arguments);
-        return offerListFragment;
+    //CONSTRUCTOR ESTATICO
+    public static OfferListFragment newInstance() {
+        return new OfferListFragment();
     }
 
     //INICIO CICLO VIDA
@@ -63,59 +53,70 @@ public class OfferListFragment extends ListFragment implements BaseView, OfferLi
             throw new ClassCastException("Error: " + activity + " must implement OfferListListener.");
         }
     }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Menu
         setHasOptionsMenu(true);
+
         //Retener fragment
         setRetainInstance(true);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //Vista
+        //Inflar vista + Crear elementos
         View view = inflater.inflate(R.layout.fragment_offer_list, container, false);
         toolbar = view.findViewById(R.id.toolbar);
         floatingActionButton = view.findViewById(R.id.fab);
+
         //Adapter y presenter
         adapter = new OfferAdapter(getActivity());
         presenter = new OfferListPresenter(this);
-        presenter.loadOfferList();
+
         return view;
     }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //Menu contextual
         registerForContextMenu(getListView());
+
         //Adapter
         setListAdapter(adapter);
-        //Vista
+
+        //Toolbar
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+
+        //Fab + listener añadir
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.loadOfferList();
+                callback.addNewOffer(null);
             }
         });
-        //Elemento
-        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+        //Elemento + listener edición parcelable
+        getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Parcelable parcel = (Parcelable) adapterView.getItemAtPosition(i);
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Parcelable parcel = (Parcelable) adapterView.getItemAtPosition(position);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(Offer.TAG, parcel);
-                return false;
+                callback.addNewOffer(bundle);
             }
         });
     }
 
-    //MENU
+    //MENU TOOLBAR
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_offer_list_fragment, menu);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -134,11 +135,12 @@ public class OfferListFragment extends ListFragment implements BaseView, OfferLi
         menu.setHeaderTitle(R.string.offer_delete);
         getActivity().getMenuInflater().inflate(R.menu.menu_offer_list_fragment, menu);
     }
+
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_item_delete:
-                //AdapterView.AdapterContextMenuInfo = item.getMenuInfo
+                //AdapterContextMenuInfo <- getMenuInfo
                 AdapterView.AdapterContextMenuInfo adapterContextMenuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
                 Offer offer = (Offer) getListView().getItemAtPosition(adapterContextMenuInfo.position);
 
@@ -160,32 +162,32 @@ public class OfferListFragment extends ListFragment implements BaseView, OfferLi
         super.onSaveInstanceState(outState);
         outState.putSerializable(OfferListPresenter.TAG, presenter);
     }
+
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        this.presenter = (OfferListContract.Presenter) savedInstanceState.get(OfferListPresenter.TAG);
+        if (savedInstanceState != null)
+            this.presenter = (OfferListContract.Presenter) savedInstanceState.get(OfferListPresenter.TAG);
     }
 
     //COMUNICACION CON PRESENTER
     @Override
-    public void setPresenter(BasePresenter presenter) {
-        this.presenter = (OfferListContract.Presenter) presenter;
+    public void setPresenter(OfferListContract.Presenter presenter) {
+        this.presenter = presenter;
     }
+
     @Override
     public void showOfferList(List offerListInteractor) {
         adapter.clear();
         adapter.addAll(offerListInteractor);
     }
-    @Override
-    public void showMessage(String message) {
-    }
-    @Override
-    public void showDeletedMessage(String message) {
 
+    @Override
+    public void showOfferDeletedMessage() {
+        ((BaseActivity) callback).showMessage(R.string.offer_deleted_message);
     }
 
     //CICLO DE VIDA
-
     @Override
     public void onPause() {
         super.onPause();
@@ -209,6 +211,8 @@ public class OfferListFragment extends ListFragment implements BaseView, OfferLi
     @Override
     public void onDestroy() {
         super.onDestroy();
+        presenter.onDestroy();
+        adapter = null;
     }
 
     @Override
@@ -216,7 +220,9 @@ public class OfferListFragment extends ListFragment implements BaseView, OfferLi
         super.onDetach();
     }
 
-
-
+    //CONTRATO CON LA ACTIVITY
+    public interface OfferListListener {
+        void addNewOffer(Bundle bundle);
+    }
 
 }

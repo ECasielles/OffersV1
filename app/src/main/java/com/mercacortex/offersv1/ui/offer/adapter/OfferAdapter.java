@@ -1,4 +1,4 @@
-package com.mercacortex.offersv1.data.adapter;
+package com.mercacortex.offersv1.ui.offer.adapter;
 
 
 import android.content.Context;
@@ -33,7 +33,8 @@ public class OfferAdapter extends ArrayAdapter<Offer> {
         OfferHolder holder;
         if(rootView == null) {
             LayoutInflater inflater = LayoutInflater.from(getContext());
-            rootView = inflater.inflate(R.layout.item_offer, parent);
+            //inflater(layout, parent, false)
+            rootView = inflater.inflate(R.layout.item_offer, parent, false);
             holder = new OfferHolder();
 
             holder.imvType = rootView.findViewById(R.id.imvType);

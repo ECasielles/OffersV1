@@ -2,7 +2,6 @@ package com.mercacortex.offersv1.ui.offer.contract;
 
 import com.mercacortex.offersv1.data.db.model.Offer;
 import com.mercacortex.offersv1.ui.base.BasePresenter;
-import com.mercacortex.offersv1.ui.base.BaseView;
 
 import java.io.Serializable;
 
@@ -12,7 +11,9 @@ import java.io.Serializable;
 
 public interface OfferAddEditContract {
 
-    interface View extends BaseView {
+    interface View {
+        void setPresenter(OfferAddEditContract.Presenter presenter);
+
         void navigateToOfferList();
         void setNameEmptyError();
         void setShopEmptyError();

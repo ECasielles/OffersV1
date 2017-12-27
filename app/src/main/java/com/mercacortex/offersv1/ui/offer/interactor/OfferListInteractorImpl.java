@@ -17,13 +17,7 @@ public class OfferListInteractorImpl implements OfferListInteractor {
 
     @Override
     public void deleteOffer(Offer offer) {
-        if(OfferRepository.getInstance().delete(offer))
-            listener.onSuccess(OfferRepository.getInstance().getOffers());
-    }
-
-    @Override
-    public void loadOffers() {
-        listener.onSuccess(OfferRepository.getInstance().getOffers());
+        listener.onOfferDeleted(OfferRepository.getInstance().delete(offer));
     }
 
 }

@@ -26,7 +26,7 @@ import com.mercacortex.offersv1.ui.offer.contract.OfferListContract;
 import com.mercacortex.offersv1.ui.offer.presenter.OfferListPresenter;
 import com.mercacortex.offersv1.utils.CommonDialog;
 
-import java.util.List;
+import java.util.ArrayList;
 
 
 public class OfferListFragment extends ListFragment implements OfferListContract.View {
@@ -121,8 +121,10 @@ public class OfferListFragment extends ListFragment implements OfferListContract
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sort_ascending:
+                adapter.sort(OfferAdapter.ASC);
                 break;
             case R.id.action_sort_descending:
+                adapter.sort(OfferAdapter.DESC);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -149,7 +151,7 @@ public class OfferListFragment extends ListFragment implements OfferListContract
                 bundle.putString(CommonDialog.TITLE, "Eliminar oferta");
                 bundle.putString(CommonDialog.MESSAGE, "¿Desea eliminar la oferta?");
                 bundle.putParcelable(CommonDialog.OFFER, offer);
-                Dialog dialog = CommonDialog.showConfirmationDialog(bundle, getActivity(), presenter);
+                Dialog dialog = CommonDialog.showConfirmationDialog(bundle, getContext(), presenter);
                 dialog.show();
                 break;
         }
@@ -177,14 +179,24 @@ public class OfferListFragment extends ListFragment implements OfferListContract
     }
 
     @Override
-    public void showOfferList(List offerListInteractor) {
+    public void showOfferList(ArrayList<Offer> offerList) {
         adapter.clear();
-        adapter.addAll(offerListInteractor);
+        adapter.addAll(offerList);
     }
 
     @Override
     public void showOfferDeletedMessage() {
         ((BaseActivity) callback).showMessage(R.string.offer_deleted_message);
+    }
+
+    @Override
+    public void showOfferAddedMessage() {
+        ((BaseActivity) callback).showMessage(R.string.offer_added_message);
+    }
+
+    @Override
+    public void showOfferEditedMessage() {
+        ((BaseActivity) callback).showMessage(R.string.offer_edited_message);
     }
 
     //CICLO DE VIDA
@@ -224,5 +236,6 @@ public class OfferListFragment extends ListFragment implements OfferListContract
     public interface OfferListListener {
         void addNewOffer(Bundle bundle);
     }
+
 
 }

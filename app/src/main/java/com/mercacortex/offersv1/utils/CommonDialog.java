@@ -27,7 +27,7 @@ public class CommonDialog {
                 .setPositiveButton(R.string.offer_confirm_deletion, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        presenter.deleteItem((Offer) bundle.getParcelable(Offer.TAG));
+                        presenter.deleteOffer((Offer) bundle.getParcelable(Offer.TAG));
                     }
                 });
         return builder.create();

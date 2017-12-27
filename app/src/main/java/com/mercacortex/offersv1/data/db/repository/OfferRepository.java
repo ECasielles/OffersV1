@@ -13,16 +13,23 @@ import java.util.Iterator;
 public class OfferRepository extends ArrayList<Offer> {
 
     private static OfferRepository repository;
-    private ArrayList<Offer> offers;
 
     static {
         repository = new OfferRepository();
     }
 
+    private ArrayList<Offer> offers;
+
 
     private OfferRepository() {
         this.offers = new ArrayList<>();
         init();
+    }
+
+    public static OfferRepository getInstance() {
+        if (repository == null)
+            repository = new OfferRepository();
+        return repository;
     }
 
     private void init() {
@@ -34,25 +41,21 @@ public class OfferRepository extends ArrayList<Offer> {
         repository.add(new Offer("Chuflas", "Ikea", "1986/01/01", R.drawable.ic_launcher_background, 3));
     }
 
-    public static OfferRepository getInstance() {
-        if(repository == null)
-            repository = new OfferRepository();
-        return repository;
-    }
-
     public ArrayList<Offer> getOffers() {
         return offers;
     }
 
-    public boolean delete(Offer offer) {
-        boolean result = false;
+    public ArrayList<Offer> delete(Offer offer) {
         Iterator<Offer> iterator = offers.iterator();
         while (iterator.hasNext())
             if(iterator.next().equals(offer)) {
                 iterator.remove();
-                result = true;
                 break;
             }
-        return result;
+        return offers;
+    }
+
+    public void replace(Offer oldOffer, Offer newOffer) {
+
     }
 }

@@ -10,4 +10,14 @@
     <string name="offer_delete">Borrar oferta</string>
     <string name="offer_deleted_message">Oferta eliminada</string>
     <string name="offer_confirm_deletion">Eliminar oferta</string>
+    <string name="edtDate">Fecha</string>
+    <string name="edtShop">Tienda</string>
+    <string name="offer_add_edit_name_error">Nombre no válido</string>
+    <string name="offer_add_edit_shop_error">Tienda no válida</string>
+    <string name="offer_add_edit_date_error">Fecha no válida</string>
+    <string name="offer_added_message">Oferta añadida</string>
+    <string name="offer_edited_message">Oferta editada</string>
+    <string name="offer_add_edit_name_empty_error">Falta nombre</string>
+    <string name="offer_add_edit_shop_empty_error">Falta tienda</string>
+    <string name="offer_add_edit_date_empty_error">Falta fecha</string>
 </resources>

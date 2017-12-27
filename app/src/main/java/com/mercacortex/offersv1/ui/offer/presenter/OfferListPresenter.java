@@ -5,7 +5,7 @@ import com.mercacortex.offersv1.ui.offer.contract.OfferListContract;
 import com.mercacortex.offersv1.ui.offer.interactor.OfferListInteractor;
 import com.mercacortex.offersv1.ui.offer.interactor.OfferListInteractorImpl;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Presenter de OfferListFragment
@@ -14,32 +14,31 @@ import java.util.List;
 public class OfferListPresenter implements OfferListContract.Presenter,
         OfferListInteractor.OnLoadFinishedListener {
     public static final String TAG = "OfferListPresenter";
-
-    OfferListContract.View view;
-    OfferListInteractor interactor;
+    private OfferListContract.View view;
+    private OfferListInteractor interactor;
 
     public OfferListPresenter(OfferListContract.View view) {
         this.view = view;
         this.interactor = new OfferListInteractorImpl(this);
     }
 
+    //COMUNICACION CON INTERACTOR
+    @Override
+    public void deleteOffer(Offer offer) {
+        interactor.deleteOffer(offer);
+    }
+
+    @Override
+    public void onOfferDeleted(ArrayList<Offer> offerList) {
+        view.showOfferList(offerList);
+        view.showOfferDeletedMessage();
+    }
+
+    //CICLO DE VIDA
     @Override
     public void onDestroy() {
-
+        view = null;
+        interactor = null;
     }
 
-    @Override
-    public void onSuccess(List<Offer> offers) {
-
-    }
-
-    @Override
-    public void loadOfferList() {
-
-    }
-
-    @Override
-    public void deleteItem(Offer parcelable) {
-
-    }
 }
